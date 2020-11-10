@@ -35,6 +35,14 @@ module Ebay
     # @return [String]
     attr_reader :service_version
 
+    # @return [String]
+    attr_reader :tracking_id
+
+    # @return [String]
+    attr_reader :network_id
+
+
+
     # Returns a Finding API request instance
     #
     # @see https://developer.ebay.com/Devzone/finding/Concepts/SiteIDToGlobalID.html
@@ -45,12 +53,14 @@ module Ebay
     # @param [String] service_version
     def initialize(global_id: nil, message_encoding: nil,
                    response_data_format: nil,
-                   security_appname: Config.app_id, service_version: nil)
+                   security_appname: Config.app_id, service_version: nil, tracking_id: nil, network_id: nil)
       @global_id = global_id
       @message_encoding = message_encoding
       @response_data_format = response_data_format
       @security_appname = security_appname
       @service_version = service_version
+      @tracking_id = tracking_id
+      @network_id = network_id
     end
 
     # Searches for items whose listings are completed
@@ -141,7 +151,10 @@ module Ebay
                  'OPERATION-NAME' => operation,
                  'RESPONSE-DATA-FORMAT' => response_data_format,
                  'SECURITY-APPNAME' => security_appname,
-                 'SERVICE-VERSION' => service_version }.update(payload).compact
+                 'SERVICE-VERSION' => service_version,
+                 'affiliate.trackingId' => tracking_id,
+                 'affiliate.networkId' => network_id
+                  }.update(payload).compact
 
       http.get(endpoint, params: params)
     end
